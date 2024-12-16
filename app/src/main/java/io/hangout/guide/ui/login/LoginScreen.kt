@@ -8,22 +8,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.hangout.guide.utils.AuthManager
 import io.hangout.guide.R
+import kotlinx.coroutines.launch
+import android.content.Context
+import android.widget.Toast
+import io.hangout.guide.utils.AuthRes
 
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onNavigateForgotPassword: () -> Unit,
     onNavigateToHome: () -> Unit,
+    auth: AuthManager,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -79,7 +89,11 @@ fun LoginScreen(
 
         // Botón iniciar sesión
         Button(
-            onClick = { onNavigateToHome() },
+            onClick = {
+                scope.launch{
+                    emailPassSignIn(email, password, auth, context, onNavigateToHome)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -101,4 +115,21 @@ fun LoginScreen(
     }
 
 
+}
+
+private suspend fun emailPassSignIn(email: String, password: String, auth: AuthManager, context: Context, onNavigateToHome: () -> Unit) {
+    if(email.isNotEmpty() && password.isNotEmpty()){
+        when(val result = auth.signInWithEmailAndPassword(email, password)){
+            is AuthRes.Success -> {
+                Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                onNavigateToHome()
+            }
+            is AuthRes.Error -> {
+                Toast.makeText(context, "Error en el inicio de sesión", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }else{
+        Toast.makeText(context, "Existen campos vacios", Toast.LENGTH_LONG).show()
+    }
 }

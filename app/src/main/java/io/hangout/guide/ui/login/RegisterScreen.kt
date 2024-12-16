@@ -1,5 +1,7 @@
 package io.hangout.guide.ui.login
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -8,20 +10,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.hangout.guide.utils.AuthManager
 import io.hangout.guide.R
+import io.hangout.guide.utils.AuthRes
+import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(onNavigateLogin: () -> Unit) {
+fun RegisterScreen(onNavigateLogin: () -> Unit, auth: AuthManager) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -92,6 +101,9 @@ fun RegisterScreen(onNavigateLogin: () -> Unit) {
         // Botón de registrar
         Button(
             onClick = {
+                scope.launch{
+                    signUp(email, password, confirmPassword, auth, context, onNavigateLogin)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,4 +120,31 @@ fun RegisterScreen(onNavigateLogin: () -> Unit) {
             Text("¿Ya tienes una cuenta? inicia sesión")
         }
     }
+}
+
+private suspend fun signUp(email: String, password: String, confirmPassword: String, auth: AuthManager, context: Context, onNavigateLogin: () -> Unit) {
+    if(email.isNotEmpty() && password.isNotEmpty() && makeValidations(password, confirmPassword, context)){
+
+        when(val result = auth.createUserWithEmailAndPassword(email, password)){
+            is AuthRes.Success -> {
+                Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                onNavigateLogin()
+            }
+            is AuthRes.Error -> {
+                Toast.makeText(context, "Error en el registro", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }else{
+        Toast.makeText(context, "Existen campos vacios", Toast.LENGTH_LONG).show()
+    }
+}
+
+fun makeValidations(password: String, confirmPassword: String, context: Context): Boolean{
+    if (password != confirmPassword){
+        Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show()
+        return false
+    }
+
+    return true
 }
