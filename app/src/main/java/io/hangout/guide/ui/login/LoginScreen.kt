@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import android.content.Context
 import android.widget.Toast
 import io.hangout.guide.utils.AuthRes
+import io.hangout.guide.ui.theme.outlinedTextFieldColors
 
 @Composable
 fun LoginScreen(
@@ -70,7 +71,9 @@ fun LoginScreen(
             label = { Text("Correo electrónico") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -82,7 +85,9 @@ fun LoginScreen(
             label = { Text("Contraseña") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -106,11 +111,11 @@ fun LoginScreen(
 
         // Enlaces de Olvidar contraseña y Registrarse
         TextButton(onClick = { onNavigateForgotPassword() }) {
-            Text("¿Olvidaste la contraseña?")
+            Text("¿Olvidaste la contraseña?", color = Color(0xFF3F51B5))
         }
 
         TextButton(onClick = { onNavigateToRegister() }) {
-            Text("Registrarse")
+            Text("Registrarse", color = Color(0xFF3F51B5))
         }
     }
 

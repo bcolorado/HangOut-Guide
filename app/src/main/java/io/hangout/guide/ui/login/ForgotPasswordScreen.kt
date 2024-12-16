@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.hangout.guide.R
+import io.hangout.guide.ui.theme.outlinedTextFieldColors
 import io.hangout.guide.utils.AuthManager
 import io.hangout.guide.utils.AuthRes
 import kotlinx.coroutines.launch
@@ -70,7 +71,9 @@ fun ForgotPasswordScreen(
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -95,7 +98,7 @@ fun ForgotPasswordScreen(
 
         // Enlaces de Olvidar contraseña y Registrarse
         TextButton(onClick = { onNavigateLogin() }) {
-            Text("¿Ya tienes una cuenta? inicia sesión")
+            Text("¿Ya tienes una cuenta? inicia sesión", color = Color(0xFF3F51B5))
         }
     }
 }

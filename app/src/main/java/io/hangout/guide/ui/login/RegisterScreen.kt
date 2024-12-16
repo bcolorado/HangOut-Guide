@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.hangout.guide.utils.AuthManager
 import io.hangout.guide.R
+import io.hangout.guide.ui.theme.outlinedTextFieldColors
 import io.hangout.guide.utils.AuthRes
 import kotlinx.coroutines.launch
 
@@ -71,7 +72,9 @@ fun RegisterScreen(onNavigateLogin: () -> Unit, auth: AuthManager) {
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -82,7 +85,9 @@ fun RegisterScreen(onNavigateLogin: () -> Unit, auth: AuthManager) {
             label = { Text("Contraseña") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            singleLine = true
+            singleLine = true,
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -93,7 +98,9 @@ fun RegisterScreen(onNavigateLogin: () -> Unit, auth: AuthManager) {
             label = { Text("Confirmar contraseña") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            singleLine = true
+            singleLine = true,
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
+            colors = outlinedTextFieldColors()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -117,7 +124,7 @@ fun RegisterScreen(onNavigateLogin: () -> Unit, auth: AuthManager) {
 
         // Enlaces de Olvidar contraseña y Registrarse
         TextButton(onClick = { onNavigateLogin() }) {
-            Text("¿Ya tienes una cuenta? inicia sesión")
+            Text("¿Ya tienes una cuenta? inicia sesión", color = Color(0xFF3F51B5))
         }
     }
 }
