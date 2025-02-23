@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -62,6 +60,10 @@ fun ProfileScreen(auth: AuthManager, onNavigateLogin: () -> Unit, navController:
     var parksPreference by remember { mutableStateOf(userProfileState?.preferences?.parks ?: false) }
     var barsPreference by remember { mutableStateOf(userProfileState?.preferences?.bars ?: false) }
 
+    LaunchedEffect(userProfileState) {
+        if (userProfileState == null)
+            profileViewModel.loadUserProfile()
+    }
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("Hangout") },
