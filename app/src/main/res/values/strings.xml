@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">HangOut Guide</string>
+    <string name="action_try">Pruébalo</string>
+    <string name="action_send">Enviar</string>
+    <string name="chat_label">Mensaje</string>
 </resources>

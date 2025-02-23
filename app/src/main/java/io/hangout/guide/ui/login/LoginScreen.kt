@@ -1,5 +1,6 @@
 package io.hangout.guide.ui.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,9 +21,11 @@ import io.hangout.guide.R
 import kotlinx.coroutines.launch
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.ui.text.style.TextAlign
 import io.hangout.guide.utils.AuthRes
 import io.hangout.guide.ui.theme.outlinedTextFieldColors
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
@@ -32,99 +35,98 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var context = LocalContext.current
+    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.placeholder_image),
-            contentDescription = "Logo",
+    Scaffold {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-        )
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp), // Padding solo para el contenido
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(180.dp))
-
-        // Título
-        Text("Bienvenido a HangOut Guide", fontSize = 22.sp, color = Color.Black, fontWeight = FontWeight.Bold,)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Campo correo
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
-            colors = outlinedTextFieldColors()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Campo contraseña
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black),
-            colors = outlinedTextFieldColors()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Botón iniciar sesión
-        Button(
-            onClick = {
-                scope.launch{
-                    emailPassSignIn(email, password, auth, context, onNavigateToHome)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3F51B5))
+                .wrapContentHeight()
         ) {
-            Text("Iniciar sesión", color = Color.White, fontSize = 16.sp)
+            Image(
+                painter = painterResource(id = R.drawable.placeholder_image),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp), // Padding solo para el contenido
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(180.dp))
 
-        // Enlaces de Olvidar contraseña y Registrarse
-        TextButton(onClick = { onNavigateForgotPassword() }) {
-            Text("¿Olvidaste la contraseña?", color = Color(0xFF3F51B5))
-        }
+            // Título
+            Text(
+                "Bienvenido a HangOut Guide",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                lineHeight = 40.sp,
+            )
 
-        TextButton(onClick = { onNavigateToRegister() }) {
-            Text("Registrarse", color = Color(0xFF3F51B5))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Campo correo
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo contraseña
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón iniciar sesión
+            Button(
+                onClick = {
+                    scope.launch{
+                        emailPassSignIn(email, password, auth, context, onNavigateToHome)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+            ) {
+                Text("Iniciar sesión", fontSize = 16.sp)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Enlaces de Olvidar contraseña y Registrarse
+            TextButton(onClick = { onNavigateForgotPassword() }) {
+                Text("¿Olvidaste la contraseña?", style = MaterialTheme.typography.bodyLarge)
+            }
+
+            TextButton(onClick = { onNavigateToRegister() }) {
+                Text("Registrarse", style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
-
-
 }
 
 private suspend fun emailPassSignIn(email: String, password: String, auth: AuthManager, context: Context, onNavigateToHome: () -> Unit) {
     if(email.isNotEmpty() && password.isNotEmpty()){
-        when(val result = auth.signInWithEmailAndPassword(email, password)){
+        when(auth.signInWithEmailAndPassword(email, password)){
             is AuthRes.Success -> {
                 Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
                 onNavigateToHome()
